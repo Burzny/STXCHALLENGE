@@ -7,4 +7,5 @@ urlpatterns = [
     path('books', views.books),
     path('books/<int:id>', views.index, name='index'),
     path('<int:id>', views.index, name='index'),
+    path('import', views.book_import),
 ]
