@@ -58,7 +58,7 @@ def books(request):
     return Response(serializer.data)    
 
 
-@api_view(['GET', 'PATCH'])
+@api_view(['GET', 'PATCH', 'DELETE'])
     # view single book
 def index(request, id):
     if request.method == 'GET':
@@ -102,6 +102,12 @@ def index(request, id):
         
         b = Book.objects.get(id=id)
         return JsonResponse(model_to_dict(b))
+    
+    
+    elif request.method == 'DELETE':
+        b = Book.objects.get(id=id)
+        b.delete()
+        return HttpResponse()
 
 
 
@@ -150,8 +156,11 @@ def book_import(request):
                     )
             book.save()
             number_of_imported_books += 1
-    
-    return HttpResponse('Imported ' + str(number_of_imported_books) + ' books.')
+                        
+    response_data = {
+        "imported": number_of_imported_books
+    }            
+    return JsonResponse(response_data)
 
     
 
