@@ -8,6 +8,7 @@ from django.http import JsonResponse
 import json
 
 
+
 from .models import Book
 from .serializers import BookSerializer
 
@@ -56,10 +57,51 @@ def books(request):
     serializer = BookSerializer(b, many=True)    
     return Response(serializer.data)    
 
+
+@api_view(['GET', 'PATCH'])
     # view single book
-def index(request, id): 
-    b = Book.objects.get(id=id)
-    return JsonResponse(model_to_dict(b))
+def index(request, id):
+    if request.method == 'GET':
+        b = Book.objects.get(id=id)
+        return JsonResponse(model_to_dict(b))
+    elif request.method == 'PATCH':
+        b = Book.objects.get(id=id)
+        body = request.body.decode('utf=8')
+        body_dict = eval(body)
+        
+        
+        if 'title' in body_dict:
+            print('wszedl title')
+            b.title = body_dict['title']
+            b.save()
+            
+        if 'author' in body_dict:
+            print('wszedl author')
+            b.authors = body_dict['author']
+            b.save()
+        
+        if 'published_year' in body_dict:
+            print('wszedl published_year')
+            b.published_year = body_dict['published_year']
+            b.save()
+        
+        if 'external_id' in body_dict:
+            print('wszedl external_id')
+            b.external_id = body_dict['external_id']
+            b.save()
+        
+        if 'acquired' in body_dict:
+            print('wszedl acquired')
+            b.acquired = body_dict['acquired']
+            b.save()
+        
+        if 'thumbnail' in body_dict:
+            print('wszedl thumbnail')
+            b.thumbnail = body_dict['thumbnail']
+            b.save()
+        
+        b = Book.objects.get(id=id)
+        return JsonResponse(model_to_dict(b))
 
 
 
