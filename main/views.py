@@ -8,13 +8,14 @@ from django.http import JsonResponse
 import json
 from .models import Book
 from .serializers import BookSerializer
+from decouple import config
 
 
 
 # Create your views here.
 
 # Google API key
-key = 'AIzaSyD-n3AbS3Srdj78foTxL66ePpG9Jnrma_g'
+key = config('API_KEY')
 
 # view of books in database
 @api_view(['GET'])
