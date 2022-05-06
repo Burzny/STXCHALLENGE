@@ -6,9 +6,6 @@ from rest_framework.decorators import api_view
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 import json
-
-
-
 from .models import Book
 from .serializers import BookSerializer
 
@@ -19,16 +16,14 @@ from .serializers import BookSerializer
 # Google API key
 key = 'AIzaSyD-n3AbS3Srdj78foTxL66ePpG9Jnrma_g'
 
-
-@api_view(['GET']) #GET, PATCH, DELETE
+# view of books in database
+@api_view(['GET'])
 def books(request):
-
     authors_q = request.GET.get('author')
     title_q = request.GET.get('title')
     acquired_q = request.GET.get('acquired')
     from_q = request.GET.get('from')
     to_q = request.GET.get('to')
-
 
     if authors_q == None:
         authors_q = ''
@@ -39,7 +34,7 @@ def books(request):
     if to_q == None:
         to_q = '9999'
 
-    # filtered view
+# filtered view
     if acquired_q == None:
         b = Book.objects.filter(
                 authors__icontains=authors_q).filter(
@@ -64,12 +59,13 @@ def index(request, id):
     if request.method == 'GET':
         b = Book.objects.get(id=id)
         return JsonResponse(model_to_dict(b))
+    
+# editing book
     elif request.method == 'PATCH':
         b = Book.objects.get(id=id)
         body = request.body.decode('utf=8')
         body_dict = eval(body)
-        
-        
+                
         if 'title' in body_dict:
             print('wszedl title')
             b.title = body_dict['title']
@@ -103,15 +99,14 @@ def index(request, id):
         b = Book.objects.get(id=id)
         return JsonResponse(model_to_dict(b))
     
-    
+# deleting book 
     elif request.method == 'DELETE':
         b = Book.objects.get(id=id)
         b.delete()
         return HttpResponse()
+    
 
-
-
-
+# importing book from Google Books
 @api_view(['POST'])
 def book_import(request):  
     body = request.body.decode('utf=8')
@@ -162,6 +157,26 @@ def book_import(request):
     }            
     return JsonResponse(response_data)
 
+
+# adding new book
+@api_view(['POST'])
+def add(request):
+    if request.method == 'POST':
+        book_data = eval(request.body.decode('utf=8'))
+        if not Book.objects.filter(external_id=book_data['external_id']).exists():
+            book = Book(title=book_data['title'],
+                        authors=book_data['author'],
+                        published_year=book_data['published_year'],
+                        external_id=book_data['external_id'],
+                        acquired=False,
+                        thumbnail=book_data['thumbnail'],
+                    )
+            book.save()
+            
+            b = Book.objects.filter(external_id=book_data["external_id"])
+            serializer = BookSerializer(b, many=True)    
+            return Response(serializer.data)   
+    return HttpResponse('Sorry, book already exists.')
     
 
 

@@ -1,0 +1,98 @@
+
+###
+GET http://localhost:8000/books
+###
+GET http://localhost:8000
+
+
+
+
+###
+GET http://localhost:8000/200
+###
+GET http://localhost:8000/books/200
+
+
+###
+GET http://localhost:8000/books?author=Tolkien
+
+
+###
+GET http://localhost:8000/books?title=Hobbit
+
+
+###
+GET http://localhost:8000/books?author=Tolkien&title=Hobbit
+
+
+###
+GET http://localhost:8000/books?acquired=True
+
+###
+GET http://localhost:8000/books?acquired=False
+
+###
+GET http://localhost:8000/books?from=2015
+
+###
+GET http://localhost:8000/books?to=2018
+
+###
+GET http://localhost:8000/books?author=Tolkien&acquired=True&title=Hobbit&from=2015&to=2018
+
+### book import
+POST http://localhost:8000/import HTTP/1.1
+Content-Type: application/json
+
+{
+    "author":"rawling"
+}
+
+
+
+###
+PATCH http://localhost:8000/books/203
+Content-Type: application/json
+
+{
+    "title":"test2",
+    "author":"rawling",
+    "published_year":2222,
+    "external_id":1111,
+    "acquired":"True",
+    "thumbnail":"test"
+
+}
+###
+GET http://localhost:8000/books/203
+
+
+###
+DELETE http://localhost:8000/books/201
+
+###
+PATCH http://localhost:8000/books/252
+Content-Type: application/json
+
+{
+    "acquired":"True",
+}
+
+
+###
+GET http://localhost:8000/books?author=Martin&acquired=True&title=Final&from=2000&to=2005
+
+
+###
+POST http://localhost:8000/add
+Content-Type: application/json
+
+{
+    "title":"test2",
+    "author":"rawling",
+    "published_year":2222,
+    "external_id":6666,
+    "acquired":"True",
+    "thumbnail":"test"
+
+}
